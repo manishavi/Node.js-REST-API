@@ -10,3 +10,7 @@ app.get("/", function(req, res) {
   res.send("hello world");
   //send the message
 });
+//listen the express app on port 3000
+app.listen(3000, () => {
+  console.log('listening on port 3000');
+})
