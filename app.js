@@ -11,9 +11,20 @@ app.use(bodyParser.urlencoded({
   extended: true
 })); // for parsing application/x-www-form-urlencoded
 
+//add custom middleware
+app.use((req, res, next) => {
+  //log the message, Custom middleware run
+  req.userId = 1;
+  req.user = 'Manisha Lal';
+  console.log("Custom middleware run");
+  //call the next middleware
+  next();
+});
 
 app.get("/", function(req, res) {
   //set the root route
+  console.log(req.userId);
+  console.log(req.user);
   res.send("hello world");
 });
 //create jobs object
