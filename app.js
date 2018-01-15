@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 //create express app
 const app = express();
 
+const routes = require('./routes/index');
+
 //add the middleware
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({
@@ -21,60 +23,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", function(req, res) {
+app.get("/", (req, res) => {
   //set the root route
   console.log(req.userId);
   console.log(req.user);
   res.send("hello world");
 });
-//create jobs object
-//each object will have id, title,description and duration
-const jobs = [
-  {
-    id: 1,
-    title: "Node",
-      description: "For backend",
-      duration: "3 months"
-    }, 
-    {
-      id: 2,
-      title: "React",
-      description: "For front-end",
-      duration: "3 months"
-    }, 
-    {
-      id: 3,
-      title: 'Node-express',
-      description: 'For server',
-      duration: '3 months'
-    }
-  ]
-//create jobs endpoint
-app.get("/jobs",(req, res) => {
-      //return jobs to server
-  res.json(jobs);
-});
 
-app.post("/jobs", (req, res) => {
-  //create POST route /jobs
-  //get the id, title, duration, description from request body
-  let id = req.body.id;
-  let title = req.body.title;
-  let duration = req.body.duration;
-  let description = req.body.description;
-  //create new job object
-  let job = {
-    id,
-    title,
-    description,
-    duration
-  };
-  //add object to jobs array
-  jobs.push(job);
-  //return jobs array to server
-  if (!req.body) return res.sendStatus(400);
-  return res.json(jobs);
-});
+app.use('/api', routes); //allthe backend routes will start from (/api)
 
 app.listen(3000, () => {
   console.log('listening on port 3000');
