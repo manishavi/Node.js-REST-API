@@ -1,0 +1,3 @@
+{
+  "MONGO_ URI": "mongodb://localhost/node-db"  
+}
