@@ -1,9 +1,16 @@
 "use strict";
 //import express
 const express = require("express");
-
+const bodyParser = require("body-parser");
 //create express app
 const app = express();
+
+//add the middleware
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({
+  extended: true
+})); // for parsing application/x-www-form-urlencoded
+
 
 app.get("/", function(req, res) {
   //set the root route
@@ -30,14 +37,14 @@ const jobs = [
       description: 'For server',
       duration: '3 months'
     }
-]
+  ]
 //create jobs endpoint
-app.get("/jobs", function (req, res) {
+app.get("/jobs",(req, res) => {
       //return jobs to server
   res.json(jobs);
 });
 
-app.post("/jobs", (req, res, next) => {
+app.post("/jobs", (req, res) => {
   //create POST route /jobs
   //get the id, title, duration, description from request body
   let id = req.body.id;
