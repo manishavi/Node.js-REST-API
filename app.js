@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 app.use('/api', routes); //allthe backend routes will start from (/api)
 
 //connect the app to mongoose
-const promise = mongoose.connect(config.MONGO_URI, () => {
+mongoose.connect(config.MONGO_URI, () => {
   console.log('App is connected to mongoDB');
   useMongoClient: true
 });
