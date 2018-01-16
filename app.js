@@ -1,32 +1,24 @@
-"use strict";
 const express = require("express");
-const bodyParser = require("body-parser");
 const app = express();
-const routes = require('./routes/index');
-//import mongoose module
-const mongoose = require('mongoose');
-const config = require('./config/config.json');
+const bodyParser = require("body-parser");
+const routes = require("./routes/index");
 
-app.use(bodyParser.json()); 
-app.use(bodyParser.urlencoded({
-  extended: true
-})); 
+const mongoose = require("mongoose");
+const config = require("./config/config.json");
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  console.log(req.userId);
-  console.log(req.user);
-  res.send("hello world");
+  return res.send("Welcome App");
 });
 
-app.use('/api', routes); //allthe backend routes will start from (/api)
+app.use("/api", routes);
 
-//connect the app to mongoose
-const promise = mongoose.connect(config.MONGO_URI, () => {
-  console.log('App is connected to mongoDB');
-  useMongoClient: true
+mongoose.connect(config.MONGO_URI, () => {
+  console.log("Connected to MongoDB");
 });
-//App is connected to mongoDB
 
-app.listen(3000, () => {
-  console.log('listening on port 3000');
-})
+app.listen("3000", () => {
+  console.log("Application is running on PORT 3000");
+});

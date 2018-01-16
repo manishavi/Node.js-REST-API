@@ -6,43 +6,117 @@ module.exports = {
     let title = req.body.title;
     let duration = req.body.duration;
     let description = req.body.description;
-    //make sure title is provided by user
-    if(!title) {
-      return res.json({status: 400, error:"title is required"});
+
+    //make sure title is provided by the user
+    if (!title) {
+      //if title is missing then send badRequest error with 400 status
+      return res.status(400).send({ err: "title is required property" });
     }
-    //if title missing send error status 400
+
     let job = {
       title,
       description,
       duration
     };
 
-    // jobs.push(job);
-    // if (!req.body) return res.sendStatus(400);
-    // return res.json(jobs);
-    //create new instance of jobmodel
-    //pass job object in constructor function
+    //create a new instance of Job model
     const newJob = new Job(job);
+    //pass the job object in constructor function
+
     //save the job
-    //when job saved successfully then send the new job
-    //to the server with status code 200
     newJob.save(err => {
       if (err) {
-        return res.json({ status: 500, error: err });
+        return res.status(500).send(err);
       }
-      console.log('saved');
-      re.json({ status: 500, newJob });
-    })
+    });
+
+    return res.status(200).json(newJob);
   },
   findAll(req, res) {
-    //call find() of JobModel
+    // call the find method of Job Model
     Job.find({}, (err, jobs) => {
-      if(err) {
-        return res.json({ status: 404, error: err });
+      //if error occurred send error with 404 status code
+      if (err) {
+        return res.status(404).send(err);
       }
-      res.json({ status: 200, job });
-    })
-    //if err send err with 404
-    //return all jobs to server with 200
+      //return all the jobs to the server with 200 status
+      console.log(res.status(200).json(jobs));
+    });
+  },
+  findOne(req, res) {
+    //get the id from the req params
+    let id = req.params.id;
+
+    if (!id) {
+      return res.status(400).send({ err: "id is required field" });
+    }
+    //find the job by id
+    Job.findById(id, (err, job) => {
+      //if err comes then send 404
+      if (err) {
+        return res.status(404).send(err);
+      }
+
+      //send the job as response
+      return res.status(200).json(job);
+    });
+  },
+  update(req, res) {
+    //get id from req params
+    let id = req.params.id;
+
+    //get title from the req body
+    let title = req.body.title;
+
+    //get the description from the req body
+    let description = req.body.description;
+    //get the duration from the request body
+    let duration = req.body.duration;
+
+    //create jobAttributes object
+    let jobAttributes = {};
+
+    //if user wants to update the title
+    if (title) {
+      //then add title to jobAttributes
+      jobAttributes.title = title;
+    }
+
+    //if user wants to update the description
+    if (description) {
+      //then add description to jobAttributes
+      jobAttributes.description = description;
+    }
+
+    //if user wants to update the duration
+    if (duration) {
+      //then add duration to jobAttributes
+      jobAttributes.duration = duration;
+    }
+    //call the update method to edit the job
+    Job.update({ _id: id }, jobAttributes, (err, result) => {
+      //if error comes send the 500 status with error
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      //if everything is good send the msg the job is
+      //updated successfully
+      return res.status(200).json({ msg: `job is updated with id  ${id}` });
+    });
+  },
+  delete(req, res) {
+    //get the id from req params
+    let id = req.params.id;
+
+    //call findByIdAndRemove method
+    Job.findByIdAndRemove(id, err => {
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      //if everything is good, send the msg job has deleted
+      return res.status(200).json({ msg: `Job is deleted with id ${id}` });
+    });
   }
 };
